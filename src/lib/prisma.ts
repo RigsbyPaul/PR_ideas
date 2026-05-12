@@ -12,6 +12,7 @@ const prismaClientSingleton = () => {
         url: url.trim(),
         authToken: authToken.trim(),
       });
+      // @ts-ignore - Bypass type mismatch between libsql client and prisma adapter
       const adapter = new PrismaLibSQL(libsql);
       return new PrismaClient({ adapter });
     } catch (e) {
