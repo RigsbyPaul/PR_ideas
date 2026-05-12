@@ -1,15 +1,22 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { Lightbulb, MessageSquare, ThumbsUp, AlertCircle } from "lucide-react";
+import { Idea } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
+interface IdeaWithCount extends Idea {
+  _count: {
+    comments: number;
+  };
+}
+
 export default async function Home() {
-  let ideas = [];
-  let error = null;
+  let ideas: IdeaWithCount[] = [];
+  let error: string | null = null;
 
   try {
-    ideas = await prisma.idea.findMany({
+    const results = await prisma.idea.findMany({
       where: {
         status: "PUBLISHED",
       },
@@ -22,6 +29,7 @@ export default async function Home() {
         },
       },
     });
+    ideas = results as IdeaWithCount[];
   } catch (e: any) {
     console.error("Database error:", e);
     error = e.message || "Could not connect to the database.";
