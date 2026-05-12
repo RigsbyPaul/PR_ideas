@@ -3,7 +3,8 @@ import prisma from "../src/lib/prisma";
 import { classifyInbound } from "../src/lib/inbound-router";
 import { env } from "../src/lib/env";
 
-const mail = new AgentMail(env.AGENTMAIL_TOKEN);
+// @ts-expect-error - AgentMail ESM typing can be finicky in build environments
+const mail = new AgentMail(env.AGENTMAIL_TOKEN!);
 
 async function sync() {
   console.log("Checking for new emails via AgentMail...");
