@@ -1,15 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
 import { createClient } from "@libsql/client";
-import { env } from "./env";
 
 const prismaClientSingleton = () => {
-  const url = "libsql://prideas-readiescards.aws-eu-west-1.turso.io";
-  const authToken = env.TURSO_AUTH_TOKEN;
-
-  console.log("Prisma init - Hardcoded URL");
+  const url = process.env.TURSO_DATABASE_URL;
+  const authToken = process.env.TURSO_AUTH_TOKEN;
 
   if (url && authToken) {
+    console.log("Initializing Prisma with Turso adapter...");
     const libsql = createClient({
       url,
       authToken,
@@ -18,10 +16,8 @@ const prismaClientSingleton = () => {
     const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
-  // Fallback to local SQLite if Turso env vars are missing AND we are not on Vercel
-  if (process.env.VERCEL) {
-    return new PrismaClient(); // This will fail later with a better error in the UI
-  }
+
+  console.log("Falling back to standard Prisma Client (no adapter)...");
   return new PrismaClient();
 };
 
