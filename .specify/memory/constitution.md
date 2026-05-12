@@ -1,50 +1,49 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Version change: 0.0.0 → 1.0.0
+Modified principles: 
+- N/A → I. User-Centric Transparency
+- N/A → II. Public Engagement (Commenting)
+- N/A → III. Modern Web Standards
+- N/A → IV. Robust Documentation
+- N/A → V. Performance & Accessibility
+Added sections: Core Principles, Technical Standards, Community Governance
+Templates requiring updates: 
+- .specify/templates/plan-template.md (✅ updated)
+- .specify/templates/spec-template.md (✅ updated)
+- .specify/templates/tasks-template.md (✅ updated)
+-->
+
+# PR Ideas Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. User-Centric Transparency
+The platform MUST prioritize the clear presentation of ideas. Each invention or concept should be easily discoverable, readable, and understandable by a general audience. Visuals and structured text should be used to minimize ambiguity.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Public Engagement (Commenting)
+Community feedback is the lifeblood of 'PR_ideas'. The platform MUST provide a seamless, low-friction commenting system that encourages constructive dialogue while maintaining a high standard of discourse.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Modern Web Standards
+Implementation MUST follow modern web development best practices, ensuring the site is responsive, fast-loading, and secure. We favor stable, well-supported frameworks that allow for rapid iteration without sacrificing long-term maintainability.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Robust Documentation
+Every idea submitted MUST include enough detail for a third party to understand the 'what', 'why', and 'how' of the invention. Technical specifications, where applicable, should be precise and follow established industry formats.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Performance & Accessibility
+The web experience MUST be accessible to everyone (WCAG 2.1 compliance) and performant on both high-end and mobile devices. Page load times should be optimized to ensure ideas reach the audience instantly.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technical Standards
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Technology Stack
+We favor technologies that are easy to deploy and scale. Use of static site generators (SSG) for content delivery with dynamic islands for interactivity (like comments) is preferred to ensure high availability.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Community Governance
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Content Moderation
+While openness is key, the platform will maintain a moderation policy to prevent spam, abuse, and off-topic content. Guidelines for commenting will be clearly posted.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Amendments to this constitution require a documented proposal and a transition plan to update existing features. All development tasks must be verified against these principles during implementation.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-05-11 | **Last Amended**: 2026-05-11
