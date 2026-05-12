@@ -9,7 +9,7 @@ A full-stack Next.js application designed for speed and simplicity. It uses a "H
 - **Deployment**: Vercel (Automatic GitHub Integration)
 - **Authentication**: Secret-based access for Admin Dashboard (`ADMIN_SECRET`)
 - **Backups**: Custom Python script triggered via Cron, uploading to Google Drive API.
-- **Inbound Routing**: AgentMail inbox (`jakdor@agentmail.to`) synced via Cron (`scripts/sync-inbound.ts`).
+- **Inbound Routing**: AgentMail inbox (`jakdor@agentmail.to`) filtered for `IDEA` content only. Non-idea messages are left unread for other platform integrations.
 
 ## Data Model
 ### `Idea`

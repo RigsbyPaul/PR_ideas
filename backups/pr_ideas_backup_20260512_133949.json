@@ -1,0 +1,49 @@
+{
+  "ideas": [
+    {
+      "id": "3169da2a-4eb7-4632-a6a1-ce9674bffb08",
+      "title": "Sheep",
+      "description": "",
+      "status": "DRAFT",
+      "imagePath": null,
+      "aiText": null,
+      "likes": 0,
+      "dislikes": "2026-05-12T08:59:59.064+00:00",
+      "createdAt": "2026-05-12T08:59:59.064+00:00",
+      "updatedAt": 0
+    },
+    {
+      "id": "6dd8c573-1199-48c5-bdba-26b885c52e56",
+      "title": "PR Ideas",
+      "description": "Create a tool to help me manage, publicise, critique my ideas. My ideas are in many formats paper doodles, text messages, emails voice notes. Lets call it 'PR Ideas'. I want you to understand, critique and explore the idea. I want anonymous readers of my ideas to be able to 'like' / 'dislike' an idea.",
+      "status": "PUBLISHED",
+      "imagePath": null,
+      "aiText": "### \ud83e\udde0 Understanding\nThe core problem being solved is the **Input Fragmentation**. Ideas are fleeting and often captured in the quickest way possible (a voice memo while driving, a scribble on a napkin, a quick Telegram message). By creating a central repository that handles these disparate formats, you transform a 'junk drawer' of thoughts into a structured innovation pipeline.\n\n### \u2696\ufe0f Critique\n**Strengths:**\n*   **Low-Friction Capture:** By supporting Telegram and Email, you lower the barrier to entry for the 'moment of inspiration'.\n*   **Public Accountability:** Having a dashboard makes your progress visible, which can motivate development.\n*   **Feedback Loop:** Anonymous 'likes' provide a simple signal of what resonates with others without the social friction of named comments.\n\n**Potential Pitfalls:**\n*   **The \"Doodle\" Problem:** Turning paper sketches into actionable data is hard. We might need a Vision-to-Markdown pipeline.\n*   **Over-Engineering:** The risk is spending more time building the tool than the actual ideas it contains.\n\n### \ud83d\ude80 Exploration\n*   **Semantic Linking:** Imagine if the AI says: \"Hey, your idea for 'Solar Mugs' from 3 months ago actually solves the power problem for this new 'Remote Sensor' idea.\"\n*   **Voice-to-Task:** Since you use voice notes, the system could automatically generate a Trello board or GitHub Issue from the audio transcript.\n*   **Public/Private Toggles:** Some ideas are for the world; some are for your eyes only. Adding a privacy flag would be key.",
+      "likes": 1,
+      "dislikes": "2026-05-12T12:04:27.517+00:00",
+      "createdAt": "2026-05-12T12:15:26.649+00:00",
+      "updatedAt": 0
+    },
+    {
+      "id": "4f2234fe-dd3c-4a19-b544-4737f670fbc9",
+      "title": "Privacy Toggles & Draft Mode",
+      "description": "Implemented a status-based visibility system. Ideas can now be set to DRAFT, PUBLISHED, or PRIVATE. Private ideas will only be visible to the owner via a secure admin view.",
+      "status": "PRIVATE",
+      "imagePath": null,
+      "aiText": "### Implementation Note\nI have updated the system to recognize 'PRIVATE' as a status. The public dashboard is currently filtered to only show 'PUBLISHED' ideas. Next, we should add an Admin dashboard where Paul can manage these statuses.",
+      "likes": 0,
+      "dislikes": "2026-05-12T12:16:23.579+00:00",
+      "createdAt": "2026-05-12T12:25:52.097+00:00",
+      "updatedAt": 0
+    }
+  ],
+  "comments": [
+    {
+      "id": "0d5a51a7-fa38-442a-9d06-cee1a3594c63",
+      "content": "Well that sure sounds like an idea about ideas so I guess it must be good!",
+      "author": "Tester Bob",
+      "ideaId": "6dd8c573-1199-48c5-bdba-26b885c52e56",
+      "createdAt": "2026-05-12T12:14:00.390+00:00"
+    }
+  ]
+}

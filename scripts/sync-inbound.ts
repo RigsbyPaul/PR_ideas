@@ -19,22 +19,19 @@ async function sync() {
       return;
     }
 
-    console.log(`Processing ${messageSummaries.length} messages...`);
+    console.log(`Processing ${messageSummaries.length} unread messages...`);
 
     let ideaCount = 0;
-    let expenseCount = 0;
-    let skippedCount = 0;
+    let ignoredCount = 0;
 
     for (const summary of messageSummaries) {
       try {
-        // Skip if already has 'read' label (fallback for broken API filters)
         if (summary.labels?.includes('read')) {
           continue;
         }
 
         const msg = await mail.inboxes.messages.get("jakdor@agentmail.to", summary.messageId);
         
-        // Double check labels on full message object
         if (msg.labels?.includes('read')) {
           continue;
         }
@@ -47,11 +44,13 @@ async function sync() {
         );
         
         if (classification === "IDEA") {
+          console.log(`[IDEA] "${msg.subject}" identified.`);
           const existing = await prisma.idea.findFirst({ where: { title: msg.subject } });
+          
           if (existing) {
-            console.log(`[IDEA] "${msg.subject}" already exists. Skipping database entry.`);
+            console.log(`[IDEA] "${msg.subject}" already exists in DB.`);
           } else {
-            console.log(`[IDEA] "${msg.subject}" -> Database (Draft)`);
+            console.log(`[IDEA] "${msg.subject}" -> Saving to Database (Draft)`);
             const imagePath = msg.attachments?.find((a: any) => a.contentType?.startsWith('image/'))?.url;
             await prisma.idea.create({
               data: {
@@ -62,26 +61,26 @@ async function sync() {
               }
             });
           }
+          
+          // ONLY mark as read if it is an IDEA.
+          // This allows other project scripts (Health, Expenses) to process the same inbox.
+          await mail.inboxes.messages.update("jakdor@agentmail.to", msg.messageId, {
+            addLabels: ["read"],
+            removeLabels: ["unread"]
+          });
+          console.log(`[IDEA] "${msg.subject}" marked as read.`);
           ideaCount++;
-        } else if (classification === "EXPENSE") {
-          console.log(`[EXPENSE] "${msg.subject}" -> Routing to PR Expenses...`);
-          expenseCount++;
         } else {
-          console.log(`[SKIP] "${msg.subject}" (Classification: ${classification})`);
-          skippedCount++;
+          // If it's an Expense, Health Stat, or anything else, we leave it UNREAD.
+          console.log(`[SKIP] "${msg.subject}" (Classification: ${classification}). Leaving unread for other handlers.`);
+          ignoredCount++;
         }
-
-        // Mark as read
-        await mail.inboxes.messages.update("jakdor@agentmail.to", msg.messageId, {
-          addLabels: ["read"],
-          removeLabels: ["unread"]
-        });
       } catch (err) {
         console.error(`Error processing message ${summary.messageId}:`, err);
       }
     }
     
-    console.log(`Sync complete. Summary: ${ideaCount} ideas, ${expenseCount} expenses, ${skippedCount} skipped.`);
+    console.log(`Sync complete. Summary: ${ideaCount} ideas processed and marked read, ${ignoredCount} messages left unread.`);
   } catch (error) {
     console.error("Sync failed:", error);
   }

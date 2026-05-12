@@ -38,4 +38,4 @@
 - [x] T023 Deploy to Vercel via GitHub Continuous Integration
 - [x] T024 Setup Cron Job for `npm run sync` to pull ideas from email hourly
 - [x] T025 Implement automated daily database backups to Google Drive (2:30 AM)
-- [x] T026 Integrated Expense tracking from AgentMail to PR Expenses spreadsheet
+- [x] T026 Removed: Integrated Expense tracking (Now a separate project)

@@ -20,9 +20,8 @@
 ### 1. Intelligence Router (Inbound Processing)
 - **Unified Intake**: Process all incoming communications (Email, Images, Text).
 - **Auto-Classification**: 
-    - **Expenses**: Detect bank statements, receipts, or financial mentions. Route to the existing 'PR Expenses' workflow (appending to 'Monthly Expenditure').
-    - **Ideas**: Detect doodles, invention descriptions, or "Idea:" keywords. Route to 'PR_ideas'.
-    - **Other**: Log as general notes or health stats if relevant (e.g., 'PR Health Stats').
+    - **Ideas**: Detect doodles, invention descriptions, or "Idea:" keywords. Route to 'PR_ideas' database and mark as read in AgentMail.
+    - **Other**: Ignore (leave unread) so that other specialized scripts (Health, Expenses) can process them.
 
 ### 2. Idea Submission & Processing
 - **Multi-modal Input**: Support image (JPEG/PNG), plain text, and email forwarding via **jakdor@agentmail.to**.
