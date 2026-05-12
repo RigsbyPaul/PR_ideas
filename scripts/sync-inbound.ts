@@ -1,9 +1,9 @@
-import { AgentMail } from "agentmail";
+const { AgentMail } = require("agentmail");
 import prisma from "../src/lib/prisma";
 import { classifyInbound } from "../src/lib/inbound-router";
 import { env } from "../src/lib/env";
 
-// @ts-expect-error - AgentMail ESM typing can be finicky in build environments
+// @ts-ignore
 const mail = new AgentMail(env.AGENTMAIL_TOKEN!);
 
 async function sync() {
@@ -30,7 +30,7 @@ async function sync() {
         console.log(`[IDEA] "${msg.subject}" -> Database (Draft)`);
         
         // Take the first image attachment as the doodle if it exists
-        const imagePath = msg.attachments?.find(a => a.contentType?.startsWith('image/'))?.url;
+        const imagePath = msg.attachments?.find((a: any) => a.contentType?.startsWith('image/'))?.url;
         
         await prisma.idea.create({
           data: {
@@ -43,7 +43,6 @@ async function sync() {
       } else if (classification === "EXPENSE") {
         console.log(`[EXPENSE] "${msg.subject}" -> Routing to PR Expenses spreadsheet...`);
         // Note: The pr-expense-tracking skill covers this logic. 
-        // For now, we log the intent.
       } else {
         console.log(`[SKIP] "${msg.subject}" (Classification: ${classification})`);
       }
