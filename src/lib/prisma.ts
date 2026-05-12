@@ -7,7 +7,6 @@ const prismaClientSingleton = () => {
   const authToken = process.env.TURSO_AUTH_TOKEN;
 
   if (url && authToken) {
-    console.log("Initializing Prisma with Turso adapter...");
     const libsql = createClient({
       url,
       authToken,
@@ -17,7 +16,7 @@ const prismaClientSingleton = () => {
     return new PrismaClient({ adapter });
   }
 
-  console.log("Falling back to standard Prisma Client (no adapter)...");
+  // Fallback for local development or missing env
   return new PrismaClient();
 };
 
