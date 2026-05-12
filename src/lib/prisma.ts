@@ -18,7 +18,10 @@ const prismaClientSingleton = () => {
     const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
-
+  // Fallback to local SQLite if Turso env vars are missing AND we are not on Vercel
+  if (process.env.VERCEL) {
+    return new PrismaClient(); // This will fail later with a better error in the UI
+  }
   return new PrismaClient();
 };
 

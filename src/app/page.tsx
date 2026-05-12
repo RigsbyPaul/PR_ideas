@@ -16,7 +16,14 @@ export default async function Home() {
   let error: string | null = null;
 
   try {
-    const results = await prisma.idea.findMany({
+    if (!env.TURSO_DATABASE_URL) {
+      throw new Error("Missing TURSO_DATABASE_URL environment variable.");
+    }
+    if (!env.TURSO_AUTH_TOKEN) {
+      throw new Error("Missing TURSO_AUTH_TOKEN environment variable.");
+    }
+    
+    ideas = await prisma.idea.findMany({
       where: {
         status: "PUBLISHED",
       },
