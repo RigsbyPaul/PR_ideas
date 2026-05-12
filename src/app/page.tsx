@@ -1,23 +1,31 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
-import { Lightbulb, MessageSquare, ThumbsUp } from "lucide-react";
+import { Lightbulb, MessageSquare, ThumbsUp, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const ideas = await prisma.idea.findMany({
-    where: {
-      status: "PUBLISHED",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      _count: {
-        select: { comments: true },
+  let ideas = [];
+  let error = null;
+
+  try {
+    ideas = await prisma.idea.findMany({
+      where: {
+        status: "PUBLISHED",
       },
-    },
-  });
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        _count: {
+          select: { comments: true },
+        },
+      },
+    });
+  } catch (e: any) {
+    console.error("Database error:", e);
+    error = e.message || "Could not connect to the database.";
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -51,7 +59,18 @@ export default async function Home() {
           </p>
         </div>
 
-        {ideas.length === 0 ? (
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-16 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-100 dark:border-red-900/30">
+            <AlertCircle className="w-10 h-10 text-red-500 mb-4" />
+            <h3 className="text-lg font-medium text-red-900 dark:text-red-50">Database Connection Issue</h3>
+            <p className="text-red-600 dark:text-red-400 mt-2 text-center max-w-md px-4">
+              {error}
+            </p>
+            <p className="text-sm text-red-500 mt-4">
+              Please check your Vercel environment variables (TURSO_DATABASE_URL, etc).
+            </p>
+          </div>
+        ) : ideas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-200 dark:border-zinc-800">
             <Lightbulb className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mb-4" />
             <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-50">No ideas published yet</h3>

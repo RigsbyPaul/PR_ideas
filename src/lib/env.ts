@@ -2,11 +2,11 @@ import { z } from "zod";
 
 const envSchema = z.object({
   DATABASE_URL: z.string().optional(),
-  TURSO_DATABASE_URL: z.string().min(1),
-  TURSO_AUTH_TOKEN: z.string().min(1),
-  OPENAI_API_KEY: z.string().min(1),
+  TURSO_DATABASE_URL: z.string().optional(),
+  TURSO_AUTH_TOKEN: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
   AGENTMAIL_TOKEN: z.string().optional(),
-  ADMIN_SECRET: z.string().min(1),
+  ADMIN_SECRET: z.string().optional(),
 });
 
 export const env = envSchema.parse({

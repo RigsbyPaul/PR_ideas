@@ -4,20 +4,21 @@ import { createClient } from "@libsql/client";
 import { env } from "./env";
 
 const prismaClientSingleton = () => {
-  const url = env.TURSO_DATABASE_URL;
+  const url = "libsql://prideas-readiescards.aws-eu-west-1.turso.io";
   const authToken = env.TURSO_AUTH_TOKEN;
+
+  console.log("Prisma init - Hardcoded URL");
 
   if (url && authToken) {
     const libsql = createClient({
       url,
       authToken,
     });
-    // @ts-expect-error - PrismaLibSQL type mismatch in some environments
+    // @ts-expect-error - PrismaLibSQL type mismatch
     const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
 
-  // Fallback to local SQLite if Turso env vars are missing
   return new PrismaClient();
 };
 
