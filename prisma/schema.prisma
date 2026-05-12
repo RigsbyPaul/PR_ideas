@@ -11,7 +11,7 @@ model Idea {
   id          String    @id @default(uuid())
   title       String
   description String
-  status      String    @default("DRAFT") // DRAFT, PUBLISHED
+  status      String    @default("DRAFT") // DRAFT, PUBLISHED, PRIVATE
   imagePath   String?
   aiText      String?
   likes       Int       @default(0)
