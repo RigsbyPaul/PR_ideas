@@ -11,6 +11,7 @@ const prismaClientSingleton = () => {
       url,
       authToken,
     });
+    // @ts-expect-error - PrismaLibSQL type mismatch in some environments
     const adapter = new PrismaLibSQL(libsql);
     return new PrismaClient({ adapter });
   }
