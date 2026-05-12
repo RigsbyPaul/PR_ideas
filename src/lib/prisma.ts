@@ -1,25 +1,29 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSQL } from "@prisma/adapter-libsql";
-import { createClient } from "@libsql/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
 const prismaClientSingleton = () => {
   const url = process.env.TURSO_DATABASE_URL;
   const authToken = process.env.TURSO_AUTH_TOKEN;
 
-  if (url && url !== "undefined" && authToken && authToken !== "undefined") {
+  // Only use the adapter if we have real Turso credentials
+  const isTurso = url && url !== "undefined" && url !== "" && 
+                  authToken && authToken !== "undefined" && authToken !== "";
+
+  if (isTurso) {
     try {
-      const libsql = createClient({
+      // Prisma 7 pattern: Pass the config directly to the adapter constructor
+      // @ts-ignore - Bypass internal type mismatch if any
+      const adapter = new PrismaLibSql({
         url: url.trim(),
         authToken: authToken.trim(),
       });
-      // @ts-ignore - Bypass type mismatch between libsql client and prisma adapter
-      const adapter = new PrismaLibSQL(libsql);
       return new PrismaClient({ adapter });
     } catch (e) {
       console.error("Prisma Singleton: Error creating Turso adapter", e);
     }
   }
 
+  // Fallback for local development
   return new PrismaClient();
 };
 

@@ -63,7 +63,7 @@ async function sync() {
           labels: { add: ["read"], remove: ["unread"] }
         });
       } catch (err) {
-        console.error(`Error processing message ${summary.messageId}:`, err.message);
+        console.error(`Error processing message ${summary.messageId}:`, err);
       }
     }
     

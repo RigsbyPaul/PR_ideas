@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
-    "@prisma/adapter-libsql": "^6.4.1",
+    "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "agentmail": "^0.5.2",
     "bad-words": "^4.0.0",

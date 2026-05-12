@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { Lightbulb, MessageSquare, ThumbsUp, AlertCircle } from "lucide-react";
 import { Idea } from "@prisma/client";
-import { env } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
@@ -15,18 +14,24 @@ interface IdeaWithCount extends Idea {
 export default async function Home() {
   let ideas: IdeaWithCount[] = [];
   let error: string | null = null;
+  
+  // Collect environment info safely for debugging
+  const dbUrl = process.env.TURSO_DATABASE_URL || "";
+  const dbToken = process.env.TURSO_AUTH_TOKEN || "";
+  
   let debugInfo = {
-    hasUrl: !!env.TURSO_DATABASE_URL,
-    hasToken: !!env.TURSO_AUTH_TOKEN,
-    urlPrefix: env.TURSO_DATABASE_URL?.substring(0, 10),
+    hasUrl: dbUrl.length > 0 && dbUrl !== "undefined",
+    hasToken: dbToken.length > 0 && dbToken !== "undefined",
+    urlValue: dbUrl.substring(0, 15) + "...",
+    isUrlLiteralUndefined: dbUrl === "undefined",
   };
 
   try {
-    if (!env.TURSO_DATABASE_URL || !env.TURSO_AUTH_TOKEN) {
+    if (!debugInfo.hasUrl || !debugInfo.hasToken) {
       const missing = [];
-      if (!env.TURSO_DATABASE_URL) missing.push("TURSO_DATABASE_URL");
-      if (!env.TURSO_AUTH_TOKEN) missing.push("TURSO_AUTH_TOKEN");
-      throw new Error(`Missing Environment Variables: ${missing.join(", ")}`);
+      if (!debugInfo.hasUrl) missing.push(debugInfo.isUrlLiteralUndefined ? "TURSO_DATABASE_URL (is literal 'undefined')" : "TURSO_DATABASE_URL");
+      if (!debugInfo.hasToken) missing.push(dbToken === "undefined" ? "TURSO_AUTH_TOKEN (is literal 'undefined')" : "TURSO_AUTH_TOKEN");
+      throw new Error(`Environment Variables Issue: ${missing.join(", ")}`);
     }
     
     const results = await prisma.idea.findMany({
@@ -44,7 +49,7 @@ export default async function Home() {
     });
     ideas = results as IdeaWithCount[];
   } catch (e: any) {
-    console.error("Database error:", e);
+    console.error("Database error details:", e);
     error = e.message || "Could not connect to the database.";
   }
 
@@ -84,17 +89,18 @@ export default async function Home() {
           <div className="flex flex-col items-center justify-center py-16 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-100 dark:border-red-900/30">
             <AlertCircle className="w-10 h-10 text-red-500 mb-4" />
             <h3 className="text-lg font-medium text-red-900 dark:text-red-50">Database Connection Issue</h3>
-            <p className="text-red-600 dark:text-red-400 mt-2 text-center max-w-md px-4">
+            <p className="text-red-600 dark:text-red-400 mt-2 text-center max-w-md px-4 font-mono text-sm">
               {error}
             </p>
             <div className="mt-6 p-4 bg-white/50 dark:bg-black/20 rounded-xl text-xs font-mono text-zinc-500 text-left w-full max-w-md">
-              <p className="font-bold mb-1">System Check:</p>
-              <p>TURSO_DATABASE_URL: {debugInfo.hasUrl ? "✅ Found" : "❌ Missing"}</p>
-              <p>TURSO_AUTH_TOKEN: {debugInfo.hasToken ? "✅ Found" : "❌ Missing"}</p>
-              {debugInfo.hasUrl && <p>URL Starts With: {debugInfo.urlPrefix}...</p>}
+              <p className="font-bold mb-1">System Check (Runtime):</p>
+              <p>TURSO_DATABASE_URL: {debugInfo.hasUrl ? "✅ OK" : debugInfo.isUrlLiteralUndefined ? "❌ Literal 'undefined' string" : "❌ Empty"}</p>
+              <p>TURSO_AUTH_TOKEN: {debugInfo.hasToken ? "✅ OK" : "❌ Missing"}</p>
+              <p>URL Preview: {debugInfo.urlValue}</p>
             </div>
-            <p className="text-xs text-zinc-400 mt-6 italic">
-              Note: If you just added these to Vercel, you must trigger a new Deployment.
+            <p className="text-xs text-zinc-400 mt-6 italic text-center px-8">
+              Check Vercel Dashboard {">"} Settings {">"} Environment Variables. 
+              Ensure no quotes or extra spaces. Trigger a new deployment after changes.
             </p>
           </div>
         ) : ideas.length === 0 ? (
