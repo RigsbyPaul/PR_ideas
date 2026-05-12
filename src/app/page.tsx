@@ -15,13 +15,18 @@ interface IdeaWithCount extends Idea {
 export default async function Home() {
   let ideas: IdeaWithCount[] = [];
   let error: string | null = null;
+  let debugInfo = {
+    hasUrl: !!env.TURSO_DATABASE_URL,
+    hasToken: !!env.TURSO_AUTH_TOKEN,
+    urlPrefix: env.TURSO_DATABASE_URL?.substring(0, 10),
+  };
 
   try {
-    if (!env.TURSO_DATABASE_URL) {
-      throw new Error("Missing TURSO_DATABASE_URL environment variable.");
-    }
-    if (!env.TURSO_AUTH_TOKEN) {
-      throw new Error("Missing TURSO_AUTH_TOKEN environment variable.");
+    if (!env.TURSO_DATABASE_URL || !env.TURSO_AUTH_TOKEN) {
+      const missing = [];
+      if (!env.TURSO_DATABASE_URL) missing.push("TURSO_DATABASE_URL");
+      if (!env.TURSO_AUTH_TOKEN) missing.push("TURSO_AUTH_TOKEN");
+      throw new Error(`Missing Environment Variables: ${missing.join(", ")}`);
     }
     
     const results = await prisma.idea.findMany({
@@ -82,8 +87,14 @@ export default async function Home() {
             <p className="text-red-600 dark:text-red-400 mt-2 text-center max-w-md px-4">
               {error}
             </p>
-            <p className="text-sm text-red-500 mt-4">
-              Please check your Vercel environment variables (TURSO_DATABASE_URL, etc).
+            <div className="mt-6 p-4 bg-white/50 dark:bg-black/20 rounded-xl text-xs font-mono text-zinc-500 text-left w-full max-w-md">
+              <p className="font-bold mb-1">System Check:</p>
+              <p>TURSO_DATABASE_URL: {debugInfo.hasUrl ? "✅ Found" : "❌ Missing"}</p>
+              <p>TURSO_AUTH_TOKEN: {debugInfo.hasToken ? "✅ Found" : "❌ Missing"}</p>
+              {debugInfo.hasUrl && <p>URL Starts With: {debugInfo.urlPrefix}...</p>}
+            </div>
+            <p className="text-xs text-zinc-400 mt-6 italic">
+              Note: If you just added these to Vercel, you must trigger a new Deployment.
             </p>
           </div>
         ) : ideas.length === 0 ? (
