@@ -24,7 +24,7 @@ export default async function Home() {
       throw new Error("Missing TURSO_AUTH_TOKEN environment variable.");
     }
     
-    ideas = await prisma.idea.findMany({
+    const results = await prisma.idea.findMany({
       where: {
         status: "PUBLISHED",
       },
