@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
-import { Lightbulb, MessageSquare, ThumbsUp, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { Lightbulb, MessageSquare, AlertCircle } from "lucide-react";
 import { Idea } from "@prisma/client";
+import LikeDislike from "@/components/LikeDislike";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +17,6 @@ export default async function Home() {
   let ideas: IdeaWithCount[] = [];
   let error: string | null = null;
   
-  // Collect environment info safely for debugging
   const dbUrl = process.env.TURSO_DATABASE_URL || "";
   const dbToken = process.env.TURSO_AUTH_TOKEN || "";
   
@@ -98,10 +99,6 @@ export default async function Home() {
               <p>TURSO_AUTH_TOKEN: {debugInfo.hasToken ? "✅ OK" : "❌ Missing"}</p>
               <p>URL Preview: {debugInfo.urlValue}</p>
             </div>
-            <p className="text-xs text-zinc-400 mt-6 italic text-center px-8">
-              Check Vercel Dashboard {">"} Settings {">"} Environment Variables. 
-              Ensure no quotes or extra spaces. Trigger a new deployment after changes.
-            </p>
           </div>
         ) : ideas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-200 dark:border-zinc-800">
@@ -114,48 +111,56 @@ export default async function Home() {
             {ideas.map((idea) => (
               <article 
                 key={idea.id}
-                className="group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all"
+                className="group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none transition-all flex flex-col"
               >
-                {idea.imagePath && (
-                  <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                    <Image
-                      src={idea.imagePath}
-                      alt={idea.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                <Link href={`/idea/${idea.id}`} className="flex-1">
+                  {idea.imagePath && (
+                    <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                      <Image
+                        src={idea.imagePath}
+                        alt={idea.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 text-xs font-bold uppercase tracking-wider rounded">
+                        Idea
+                      </span>
+                      <time className="text-xs text-zinc-400 dark:text-zinc-500">
+                        {new Date(idea.createdAt).toLocaleDateString()}
+                      </time>
+                    </div>
+                    <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-2 leading-tight">
+                      {idea.title}
+                    </h3>
+                    <p className="text-zinc-600 dark:text-zinc-400 line-clamp-3 mb-6 leading-relaxed">
+                      {idea.description}
+                    </p>
                   </div>
-                )}
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-500 text-xs font-bold uppercase tracking-wider rounded">
-                      Idea
-                    </span>
-                    <time className="text-xs text-zinc-400 dark:text-zinc-500">
-                      {new Date(idea.createdAt).toLocaleDateString()}
-                    </time>
-                  </div>
-                  <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-2 leading-tight">
-                    {idea.title}
-                  </h3>
-                  <p className="text-zinc-600 dark:text-zinc-400 line-clamp-3 mb-6 leading-relaxed">
-                    {idea.description}
-                  </p>
-                  
+                </Link>
+                
+                <div className="px-6 pb-6 mt-auto">
                   <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
-                        <ThumbsUp className="w-4 h-4" />
-                        <span className="text-sm font-medium">{idea.likes}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
+                      <LikeDislike 
+                        ideaId={idea.id} 
+                        initialLikes={idea.likes} 
+                        initialDislikes={idea.dislikes} 
+                      />
+                      <Link href={`/idea/${idea.id}#comments`} className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
                         <MessageSquare className="w-4 h-4" />
                         <span className="text-sm font-medium">{idea._count.comments}</span>
-                      </div>
+                      </Link>
                     </div>
-                    <button className="text-sm font-bold text-zinc-900 dark:text-zinc-50 hover:underline underline-offset-4">
+                    <Link 
+                      href={`/idea/${idea.id}`}
+                      className="text-sm font-bold text-zinc-900 dark:text-zinc-50 hover:underline underline-offset-4"
+                    >
                       View details →
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </article>

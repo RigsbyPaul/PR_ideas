@@ -27,8 +27,18 @@ async function sync() {
 
     for (const summary of messageSummaries) {
       try {
+        // Skip if already has 'read' label (fallback for broken API filters)
+        if (summary.labels?.includes('read')) {
+          continue;
+        }
+
         const msg = await mail.inboxes.messages.get("jakdor@agentmail.to", summary.messageId);
         
+        // Double check labels on full message object
+        if (msg.labels?.includes('read')) {
+          continue;
+        }
+
         const body = msg.text || msg.html || msg.preview || "";
         const classification = await classifyInbound(
           msg.subject, 
@@ -37,18 +47,21 @@ async function sync() {
         );
         
         if (classification === "IDEA") {
-          console.log(`[IDEA] "${msg.subject}" -> Database (Draft)`);
-          
-          const imagePath = msg.attachments?.find((a: any) => a.contentType?.startsWith('image/'))?.url;
-          
-          await prisma.idea.create({
-            data: {
-              title: msg.subject,
-              description: body,
-              imagePath: imagePath || null,
-              status: "DRAFT",
-            }
-          });
+          const existing = await prisma.idea.findFirst({ where: { title: msg.subject } });
+          if (existing) {
+            console.log(`[IDEA] "${msg.subject}" already exists. Skipping database entry.`);
+          } else {
+            console.log(`[IDEA] "${msg.subject}" -> Database (Draft)`);
+            const imagePath = msg.attachments?.find((a: any) => a.contentType?.startsWith('image/'))?.url;
+            await prisma.idea.create({
+              data: {
+                title: msg.subject,
+                description: body,
+                imagePath: imagePath || null,
+                status: "DRAFT",
+              }
+            });
+          }
           ideaCount++;
         } else if (classification === "EXPENSE") {
           console.log(`[EXPENSE] "${msg.subject}" -> Routing to PR Expenses...`);
@@ -60,7 +73,8 @@ async function sync() {
 
         // Mark as read
         await mail.inboxes.messages.update("jakdor@agentmail.to", msg.messageId, {
-          labels: { add: ["read"], remove: ["unread"] }
+          addLabels: ["read"],
+          removeLabels: ["unread"]
         });
       } catch (err) {
         console.error(`Error processing message ${summary.messageId}:`, err);
