@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { Lightbulb, MessageSquare, ThumbsUp, AlertCircle } from "lucide-react";
 import { Idea } from "@prisma/client";
+import { env } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
